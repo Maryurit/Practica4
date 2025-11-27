@@ -1,0 +1,30 @@
+{
+  "name": "lab-app-2fa",
+  "version": "1.0.0",
+  "description": "Aplicación con autenticación de 2 factores",
+  "main": "app.js",
+  "scripts": {
+    "start": "node app.js",
+    "dev": "nodemon app.js",
+    "docker:build": "docker build -t lab-app-2fa .",
+    "docker:run": "docker run -p 3000:3000 lab-app-2fa",
+    "docker:compose": "docker-compose up"
+  },
+  "dependencies": {
+    "bcryptjs": "^2.4.3",
+    "dotenv": "^16.3.1",
+    "ejs": "^3.1.10",
+    "express": "^4.18.2",
+    "express-handlebars": "^7.0.7",
+    "express-session": "^1.17.3",
+    "mysql2": "^3.15.3",
+    "passport": "^0.6.0",
+    "passport-local": "^1.0.0",
+    "qr-image": "^3.2.0",
+    "sequelize": "^6.32.1",
+    "speakeasy": "^2.0.0"
+  },
+  "devDependencies": {
+    "nodemon": "^3.0.1"
+  }
+}

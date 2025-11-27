@@ -1,0 +1,56 @@
+# docker-compose.yml
+version: '3.8'
+
+services:
+  # Aplicación principal
+  app:
+    build: .
+    ports:
+      - "3000:3000"
+    environment:
+      - NODE_ENV=production
+      - PORT=3000
+      - SESSION_SECRET=lab_docker_secret_2025
+      # Configuración RDS
+      - RDS_HOSTNAME=lab-app-db.c8ri0k6e026h.us-east-1.rds.amazonaws.com
+      - RDS_PORT=3306
+      - RDS_DB_NAME=lab_app_db
+      - RDS_USERNAME=admin
+      - RDS_PASSWORD=LabPassword123!
+    volumes:
+      # Volumen para persistencia de SQLite (si se usa como fallback)
+      - ./data:/app/data
+    restart: unless-stopped
+    depends_on:
+      - mysql-db
+
+  # Base de datos MySQL local (para desarrollo/backup)
+  mysql-db:
+    image: mysql:8.0
+    environment:
+      MYSQL_ROOT_PASSWORD: rootpassword
+      MYSQL_DATABASE: lab_app_db
+      MYSQL_USER: admin
+      MYSQL_PASSWORD: password
+    ports:
+      - "3307:3306"  # Puerto diferente para no conflictos
+    volumes:
+      - mysql_data:/var/lib/mysql
+      - ./init.sql:/docker-entrypoint-initdb.d/init.sql
+    restart: unless-stopped
+
+  # PHPMyAdmin (opcional - para administrar BD)
+  phpmyadmin:
+    image: phpmyadmin/phpmyadmin
+    environment:
+      PMA_HOST: mysql-db
+      PMA_PORT: 3306
+      MYSQL_ROOT_PASSWORD: rootpassword
+    ports:
+      - "8080:80"
+    depends_on:
+      - mysql-db
+    restart: unless-stopped
+
+volumes:
+  mysql_data:
